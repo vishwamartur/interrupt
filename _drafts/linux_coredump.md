@@ -32,11 +32,21 @@ Optional motivation to continue onwards
 
 ## What is a Linux Coredump
 
-What it is, why it's useful, and how it's used.
+A linux coredump represents a snapshot of the crashing process' memory. It is written as an ELF[^elf_format] file. The entirety of the ELF format is outside the scope of this article, but we will touch on a few of the more important bits when looking at an ELF core file.
 
 ## How are coredumps enabled/collected
 
-Talke about core_pattern, ulimit, and other ways to enable coredumps.
+### core_pattern
+
+The kernel provides an interface for controlling where and how coredumps are written. The `/proc/sys/kernel/core_pattern`[^man_core] file provides two methods for capturing coredumps from crashed processes. A coredump can be written directly to a file by providing a path directly to it. For example if we wanted to write the core file to our `/tmp` directory with both the process name and the pid we would write the following to `/proc/sys/kernel/core_pattern`.
+
+```
+/tmp/core.%e.%p
+```
+
+In this example `%e` expands to the name of the crashing process, and `%p` expands to the PID of the crashing process.
+
+We can also write pipe a coredump directly to a program. This is useful when we want to modify the coredump in flight. The coredump is streamed to the provided program via `stdin`. The configuration is similar to saving directly to a file except the first character must be a `|`.
 
 ## Layout of elf core file
 
@@ -63,5 +73,7 @@ process.
 ## References
 
 <!-- prettier-ignore-start -->
-[^reference_key]: [Post Title](https://example.com)
+[^elf_format]: [ELF File Format](https://refspecs.linuxfoundation.org/elf/elf.pdf)
+[^man_core]: [`man core`](https://man7.org/linux/man-pages/man5/core.5.html)
+[^man_ulimit]: [`man ulimit`](https://man7.org/linux/man-pages/man3/ulimit.3.html)
 <!-- prettier-ignore-end -->
